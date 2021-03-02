@@ -2,6 +2,10 @@
 
 Aplicação de bate-papo Take Chat.
 
+Aplicação frontend construída em Angular 9.
+
+Provê uma interface gráfica para bate-papo, comunicando com o servidor via web sockets.
+
 Pré requisitos:
 - Npm
 - Angular CLI
