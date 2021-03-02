@@ -2,6 +2,7 @@ import { Command } from './../models/command';
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { WebSocketService } from '../services/web-socket.service';
+import { Message } from '@angular/compiler/src/i18n/i18n_ast';
 
 
 @Component({
@@ -42,21 +43,25 @@ export class ChatComponent implements OnInit, OnDestroy {
     let mensagem = sendForm.value.message;
     let destinatario = sendForm.value.destinatario;
 
+    if (mensagem != null && mensagem.trim().length > 0) {
+      if (destinatario == null || destinatario.trim().length == 0) {
 
-    if (destinatario == null || destinatario.trim().length == 0) {
+        command = Command['Mensagem'];
+        this.webSocketService.sendMessage(command + " " + mensagem);
+      }
+      else if (destinatario != null && destinatario.trim().length != 0 && this.privada == 'false') {
 
-      command = Command['Mensagem'];
-      this.webSocketService.sendMessage(command + " " + mensagem);
+        command = Command['Mensagem'];
+        this.webSocketService.sendMessage(command + " @" + destinatario + " " + mensagem);
+      } else if (destinatario != null && destinatario.trim().length != 0 && this.privada == 'true') {
+
+        command = Command['MensagemPrivada'];
+        this.webSocketService.sendMessage(command + " @" + destinatario + " " + mensagem);
+      }
+    } else {
+      alert('Digite uma mensagem.');
     }
-    else if (destinatario != null && destinatario.trim().length != 0 && this.privada == 'false') {
 
-      command = Command['Mensagem'];
-      this.webSocketService.sendMessage(command + " @" + destinatario + " " + mensagem);
-    } else if (destinatario != null && destinatario.trim().length != 0 && this.privada == 'true') {
-
-      command = Command['MensagemPrivada'];
-      this.webSocketService.sendMessage(command + " @" + destinatario + " " + mensagem);
-    }
 
     sendForm.controls.message.reset();
   }
